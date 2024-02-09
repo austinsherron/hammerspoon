@@ -22,3 +22,9 @@ foreach = Map.foreach
 map = Map.map
 fmt = String.fmt
 
+-- hammerspoon specific config
+local AppLogger = require 'toolbox.app.logger'
+local LoggerType = require 'toolbox.log.type'
+
+Config = require('toolbox.app.config').new 'hammerspoon'
+Logger = AppLogger.new(Config, LoggerType.HAMMERSPOON)
