@@ -16,12 +16,12 @@ local LOGGERS = {
   end),
 }
 
---- Gets the root nvim logger instance or the scoped sub-logger instance for the provided
+--- Gets the root logger instance or the scoped sub-logger instance for the provided
 --- label.
 ---
 ---@param label string|nil: optional; the sub-logger to get
----@return Logger: the root nvim logger instance, if label is nil, or the sub-logger
---- instance for the provided label
+---@return Logger: the root logger instance, if label is nil, or the sub-logger instance
+--- for the provided label
 ---@error if the provided label doesn't correspond to a known sub-logger
 return function(label)
   if label == nil then
