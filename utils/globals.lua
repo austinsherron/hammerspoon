@@ -5,7 +5,7 @@
 SpoonConfig = require('toolbox.app.config').new 'hammerspoon'
 
 -- logger and notification service
-local reporting = require 'hammerspoon.utils.reporting'
+local reporting = require 'utils.reporting'
 
 GetLogger = reporting.GetLogger
 GetNotify = reporting.GetNotify
