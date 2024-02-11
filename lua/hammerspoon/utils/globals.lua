@@ -1,6 +1,15 @@
 ---@note: we want global functions w/ lowercased names
 ---@diagnostic disable: lowercase-global
 
+-- hammerspoon config object
+SpoonConfig = require('toolbox.app.config').new 'hammerspoon'
+
+-- logger and notification service
+local reporting = require 'hammerspoon.utils.reporting'
+
+GetLogger = reporting.GetLogger
+GetNotify = reporting.GetNotify
+
 -- generally useful, oft imported utils
 Array = require 'toolbox.core.array'
 Bool = require 'toolbox.core.bool'
@@ -12,8 +21,10 @@ Err = require 'toolbox.error.error'
 Set = require 'toolbox.extensions.set'
 Lazy = require 'toolbox.utils.lazy'
 Map = require 'toolbox.utils.map'
-OnErr = require 'utils.error.onerr'
-Safe = require 'utils.error.safe'
+
+-- error handling utils
+OnErr = require 'toolbox.error.onerr'
+Safe = require 'toolbox.error.safe'
 
 -- generally useful, oft imported util functions
 ternary = Bool.ternary
@@ -21,10 +32,3 @@ filter = Map.filter
 foreach = Map.foreach
 map = Map.map
 fmt = String.fmt
-
--- hammerspoon specific config
-local AppLogger = require 'toolbox.app.logger'
-local LoggerType = require 'toolbox.log.type'
-
-Config = require('toolbox.app.config').new 'hammerspoon'
-Logger = AppLogger.new(Config, LoggerType.HAMMERSPOON)
