@@ -1,10 +1,11 @@
 local Lazy = require 'toolbox.utils.lazy'
 
-local AppLogger = require 'toolbox.app.logger'
+local LogLevel = require 'toolbox.log.level'
+local Logger = require 'toolbox.log.logger'
 local LoggerType = require 'toolbox.log.type'
 
-local logger = AppLogger.new(SpoonConfig, LoggerType.HAMMERSPOON)
-local notify = logger.notify
+local level = SpoonConfig.log_level() or LogLevel.default()
+local logger = Logger.new(LoggerType.HAMMERSPOON, level)
 
 local LOGGERS = {
   INIT = Lazy.value(function()
@@ -19,10 +20,10 @@ local LOGGERS = {
 --- label.
 ---
 ---@param label string|nil: optional; the sub-logger to get
----@return AppLogger: the root nvim logger instance, if label is nil, or the sub-logger
+---@return Logger: the root nvim logger instance, if label is nil, or the sub-logger
 --- instance for the provided label
 ---@error if the provided label doesn't correspond to a known sub-logger
-local function getLogger(label)
+return function(label)
   if label == nil then
     return logger
   end
@@ -31,14 +32,5 @@ local function getLogger(label)
     error(string.format('No sub-logger=%s', label))
   end
 
-  return LOGGERS[label] --[[@as AppLogger]]
+  return LOGGERS[label] --[[@as Logger]]
 end
-
-local function getNotify()
-  return notify
-end
-
-return {
-  GetLogger = getLogger,
-  GetNotify = getNotify,
-}

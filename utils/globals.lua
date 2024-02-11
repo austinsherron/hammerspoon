@@ -4,11 +4,8 @@
 -- hammerspoon config object
 SpoonConfig = require('toolbox.app.config').new 'hammerspoon'
 
--- logger and notification service
-local reporting = require 'utils.reporting'
-
-GetLogger = reporting.GetLogger
-GetNotify = reporting.GetNotify
+-- logger factory
+GetLogger = require 'utils.loggers'
 
 -- generally useful, oft imported utils
 Array = require 'toolbox.core.array'
