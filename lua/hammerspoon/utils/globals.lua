@@ -32,3 +32,5 @@ filter = Map.filter
 foreach = Map.foreach
 map = Map.map
 fmt = String.fmt
+
+GetLogger('INIT'):info 'Globals initialized'
