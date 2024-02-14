@@ -98,7 +98,7 @@ end
 ---@private
 function Quake:hide_active_if_necessary(app)
   if self.active ~= nil then
-    print(fmt 'active=%s is not nil; hiding', tostring(self.active))
+    print(fmt('active=%s is not nil; hiding', tostring(self.active)))
     self:hide(self.active, app)
   end
 end
