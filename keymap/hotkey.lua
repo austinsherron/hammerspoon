@@ -1,4 +1,5 @@
 local Hotkey = require 'utils.ctrl.hotkey'
+local Mouse = require 'utils.ctrl.mouse'
 local Quake = require 'utils.ctrl.quake'
 local Shell = require 'toolbox.system.shell'
 
@@ -21,6 +22,12 @@ HK:with({
   { 't', QK:for_binding 'iTerm' },
   { 'w', QK:for_binding 'WhatsApp' },
   { 'z', 'Zoom' },
+})
+
+-- mouse bindings
+HK:with({
+  { '[', Mouse.prev_screen },
+  { ']', Mouse.next_screen },
 })
 
 HK:bind()
