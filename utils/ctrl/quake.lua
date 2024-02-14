@@ -98,18 +98,22 @@ end
 ---@private
 function Quake:hide_active_if_necessary(app)
   if self.active ~= nil then
+    print(fmt 'active=%s is not nil; hiding', self.active)
     self:hide(self.active, app)
   end
 end
 
 local function launch_if_necessary(app_name, app)
   if not app:isRunning() then
+    print(fmt('app=%s is not running; launching', app_name))
     hs.application.launchOrFocus(app_name)
   end
 end
 
 local function unminimize_if_necessary(app)
   local win = app:mainWindow()
+
+  print(fmt('app windows=%s', app:allWindows()))
 
   if win:isMinimized() then
     win:unminimize()
