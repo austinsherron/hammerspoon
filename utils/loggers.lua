@@ -1,4 +1,5 @@
 local Lazy = require 'toolbox.utils.lazy'
+local Stub = require 'toolbox.utils.stub'
 
 local LogLevel = require 'toolbox.log.level'
 local Logger = require 'toolbox.log.logger'
@@ -24,6 +25,10 @@ local LOGGERS = {
 --- for the provided label
 ---@error if the provided label doesn't correspond to a known sub-logger
 return function(label)
+  if true then
+    return Stub.new() --[[@as Logger]]
+  end
+
   if label == nil then
     return logger
   end
