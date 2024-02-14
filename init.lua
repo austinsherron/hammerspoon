@@ -8,4 +8,8 @@ require 'utils.globals' -- import globals before doing anything else
 
 ---- spoons --------------------------------------------------------------------
 
-require 'spoons' -- load spoons (i.e.: plugins)
+require 'core.spoons' -- load spoons (i.e.: plugins)
+
+---- keymap --------------------------------------------------------------------
+
+require 'keymap'
