@@ -96,12 +96,34 @@ function Quake:focus(app_name, app)
 end
 
 ---@private
+function Quake:hide_active_if_necessary(app)
+  if self.active ~= nil then
+    self:hide(self.active, app)
+  end
+end
+
+local function launch_if_necessary(app_name, app)
+  if not app:isRunning() then
+    hs.application.launchOrFocus(app_name)
+  end
+end
+
+local function unminimize_if_necessary(app)
+  local win = app:mainWindow()
+
+  if win:isMinimized() then
+    win:unminimize()
+  end
+end
+
+---@private
 function Quake:toggle(app_name)
   local app = self:get_app(app_name)
 
-  if self.active ~= nil then
-    self:hide(app_name, app)
-  end
+  self:hide_active_if_necessary(app)
+
+  launch_if_necessary(app_name, app)
+  unminimize_if_necessary(app)
 
   if app:isFrontmost() then
     self:hide(app_name, app)

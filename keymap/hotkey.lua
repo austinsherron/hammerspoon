@@ -16,7 +16,7 @@ HK:with({
   { ',', 'System Settings' },
   { 'b', 'Brave Browser' },
   { 'c', 'Google Chrome' },
-  { 'h', 'Hammerspoon' },
+  { 'h', QK:for_binding 'Hammerspoon' },
   { 'i', incognito },
   { 'k', 'Bazecor' },
   { 't', QK:for_binding 'iTerm' },
