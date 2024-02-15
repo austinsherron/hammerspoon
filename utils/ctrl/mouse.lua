@@ -5,8 +5,19 @@ local Screen = require 'utils.api.screen'
 ---@class Mouse
 local Mouse = {}
 
-local function to_rel_screen_center(get_screen, click)
+---@return hs.screen: the screen where the mouse is
+function Mouse.current_screen()
   local current = hs.mouse.getCurrentScreen()
+
+  if current == nil then
+    error "unexpected error getting the cursor's current screen"
+  end
+
+  return current
+end
+
+local function to_rel_screen_center(get_screen, click)
+  local current = Mouse.current_screen()
   local screen = get_screen(current)
   local center = Screen.center(screen)
 
