@@ -8,8 +8,14 @@ require 'utils.globals' -- import globals before doing anything else
 
 ---- spoons --------------------------------------------------------------------
 
-require 'core.spoons' -- load spoons (i.e.: plugins)
+Safe.require 'core.spoons' -- load spoons (i.e.: plugins)
 
 ---- keymap --------------------------------------------------------------------
 
-require 'keymap'
+Safe.require 'keymap'
+
+---- watchers ------------------------------------------------------------------
+
+Safe.require 'core.watchers'
+
+GetLogger('INIT'):info 'Hammerspoon initialization complete'

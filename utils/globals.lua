@@ -5,7 +5,7 @@
 SpoonConfig = require('toolbox.app.config').new 'hammerspoon'
 
 -- logger factory
-GetLogger = require 'utils.loggers'
+GetLogger = require 'utils.reporting.loggers'
 
 -- generally useful, oft imported utils
 Array = require 'toolbox.core.array'
