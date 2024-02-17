@@ -9,18 +9,25 @@ local function incognito()
   Shell.run '/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --incognito'
 end
 
--- app bindings
+-- launch/focus bindings
 HK:with({
   { '1', '1Password' },
   { ',', 'System Settings' },
   { 'b', 'Brave Browser' },
   { 'c', 'Google Chrome' },
-  { 'h', 'Hammerspoon' },
-  { 'i', incognito },
+  { 'i', { name = 'Google Chrome incognito', fn = incognito } },
   { 'k', 'Bazecor' },
-  { 't', QK:for_binding 'iTerm' },
-  { 'w', QK:for_binding 'WhatsApp' },
   { 'z', 'Zoom' },
+})
+
+local iTerm_quake = { name = 'iTerm', window = 'tmux' }
+
+-- quake bindings
+HK:with({
+  { 'h', { name = 'Quake > Hammerspoon', fn = QK:for_binding 'Hammerspoon' } },
+  { 's', { name = 'Quake > Slack', fn = QK:for_binding 'Slack' } },
+  { 't', { name = 'Quake > iTerm', fn = QK:for_binding(iTerm_quake) } },
+  { 'w', { name = 'Quake > WhatsApp', fn = QK:for_binding 'WhatsApp' } },
 })
 
 HK:bind()

@@ -1,5 +1,7 @@
 local Screen = require 'utils.api.screen'
 
+local LOGGER = GetLogger 'MOUSE'
+
 --- Utilities for controlling the mouse/cursor.
 ---
 ---@class Mouse
@@ -13,13 +15,24 @@ function Mouse.current_screen()
     error "unexpected error getting the cursor's current screen"
   end
 
+  LOGGER:trace('current screen=%s', { current:name() })
   return current
 end
 
-local function to_rel_screen_center(get_screen, click)
+local function log_move_mouse(current, target, direction, click)
+  local w_or_wo = click == false and 'without' or 'with'
+  LOGGER:debug(
+    'moving mouse screen from %s to %s (%s) (%s click)',
+    { current:name(), target:name(), direction, w_or_wo }
+  )
+end
+
+local function to_rel_screen_center(get_screen, direction, click)
   local current = Mouse.current_screen()
-  local screen = get_screen(current)
-  local center = Screen.center(screen)
+  local target = get_screen(current)
+  local center = Screen.center(target)
+
+  log_move_mouse(current, target, direction, click)
 
   hs.mouse.absolutePosition(center)
 
@@ -35,7 +48,7 @@ end
 function Mouse.prev_screen(click)
   to_rel_screen_center(function(screen)
     return screen:previous()
-  end, click)
+  end, 'prev', click)
 end
 
 --- Moves the mouse to the center of the "next" screen and optionally click.
@@ -45,7 +58,7 @@ end
 function Mouse.next_screen(click)
   to_rel_screen_center(function(screen)
     return screen:next()
-  end, click)
+  end, 'next', click)
 end
 
 function Mouse.click(point)

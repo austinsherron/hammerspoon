@@ -1,10 +1,13 @@
 local ternary = require('toolbox.core.bool').ternary
 
+local LOGGER = GetLogger 'HOTKEY'
+
+---@alias HotkeyFnSpec { name: string, fn: function }
 --- Representation of a hotkey binding where each entry is:
 ---  1: the key to which to bind
 ---  2: a string app name (to launch/focus) or a function (to execute)
 ---  3: a string array of binding modifiers (i.e.: cmd, alt, etc.)
----@alias HotkeyBinding { [1]: string, [2]: string|function, [3]: string[]|nil }
+---@alias HotkeyBinding { [1]: string, [2]: string|HotkeyFnSpec, [3]: string[]|nil }
 
 --- Util for creating modal hotkeys.
 ---
@@ -16,14 +19,14 @@ Hotkey.__index = Hotkey
 
 local function pressed(modal)
   return function()
-    print 'hotkey pressed'
+    LOGGER:trace 'pressed'
     modal:enter()
   end
 end
 
 local function released(modal)
   return function()
-    print 'hotkey released'
+    LOGGER:trace 'released'
     modal:exit()
   end
 end
@@ -52,33 +55,33 @@ function Hotkey.modal(keys, mods)
   }, Hotkey)
 end
 
-local function launch_or_focus_app(app)
+local function launch_or_focus_app(to_bind)
   return function()
-    print('launching or focusing', app)
-    hs.application.launchOrFocus(app)
+    LOGGER:debug('launching or focusing %s', { to_bind })
+    hs.application.launchOrFocus(to_bind)
   end
 end
 
-local function get_binding_fn(app)
-  local fn = app
-
-  if type(app) ~= 'function' then
-    fn = launch_or_focus_app(app)
-  end
-
-  return fn
+local function get_binding_fn(to_bind)
+  return String.is(to_bind) and launch_or_focus_app(to_bind) or to_bind.fn
 end
 
---- Binds key/mods to launch/focus the provided app or run the provided function.
+local function log_binding_msg(key, to_bind)
+  local to_bind_str = String.is(to_bind) and to_bind or to_bind.name
+  LOGGER:debug('binding %s to %s', { key, to_bind_str })
+end
+
+--- Binds key/mods to launch/focus the provided app or run the function in the provided
+--- spec.
 ---
 ---@param key string: the key that triggers app
----@param app string|function: a string application to launch/focus, or a function to
---- trigger
+---@param to_bind string|HotkeyFnSpec: a string application to launch/focus, or a spec w/
+--- a function to trigger
 ---@param mods string[]|nil: optional; trigger modifier keys
-function Hotkey:bind_one(key, app, mods)
-  local fn = get_binding_fn(app)
+function Hotkey:bind_one(key, to_bind, mods)
+  local fn = get_binding_fn(to_bind)
 
-  print('binding', key, 'to', app)
+  log_binding_msg(key, to_bind)
 
   foreach(self.modals, function(modal)
     modal:bind(mods or {}, key, fn)
@@ -116,13 +119,13 @@ end
 --- Binds a hot key.
 ---
 ---@param key string: the key that triggers app
----@param app string|function: a string application to launch/focus, or a function to
---- trigger
+---@param to_bind string|HotkeyFnSpec: a string application to launch/focus, or a function
+-- spec w/ a function to trigger
 ---@param mods string[]|nil: optional; trigger modifier keys
-function Hotkey.hotkey(key, app, mods)
-  local fn = get_binding_fn(app)
+function Hotkey.hotkey(key, to_bind, mods)
+  local fn = get_binding_fn(to_bind)
 
-  print('binding', key, 'to', app)
+  log_binding_msg(key, to_bind)
 
   hs.hotkey.bind(mods or {}, key, nil, fn)
 end
