@@ -1,16 +1,23 @@
 local Lazy = require 'toolbox.utils.lazy'
-local Stub = require 'toolbox.utils.stub'
+local SpoonLogger = require 'utils.reporting.logger'
 
-local LogLevel = require 'toolbox.log.level'
-local Logger = require 'toolbox.log.logger'
-local LoggerType = require 'toolbox.log.type'
-
-local level = SpoonConfig.log_level() or LogLevel.default()
-local logger = Logger.new(LoggerType.HAMMERSPOON, level)
+local logger = SpoonLogger.new(SpoonConfig)
 
 local LOGGERS = {
+  HOTKEY = Lazy.value(function()
+    return logger:sub 'HOTKEY'
+  end),
   INIT = Lazy.value(function()
     return logger:sub 'INIT'
+  end),
+  KEYMAP = Lazy.value(function()
+    return logger:sub 'KEYMAP'
+  end),
+  MOUSE = Lazy.value(function()
+    return logger:sub 'MOUSE'
+  end),
+  QUAKE = Lazy.value(function()
+    return logger:sub 'QUAKE'
   end),
   SPOONS = Lazy.value(function()
     return logger:sub 'SPOONS'
@@ -21,14 +28,10 @@ local LOGGERS = {
 --- label.
 ---
 ---@param label string|nil: optional; the sub-logger to get
----@return Logger: the root logger instance, if label is nil, or the sub-logger instance
---- for the provided label
+---@return SpoonLogger: the root logger instance, if label is nil, or the sub-logger
+--- instance for the provided label
 ---@error if the provided label doesn't correspond to a known sub-logger
 return function(label)
-  if true then
-    return Stub.new() --[[@as Logger]]
-  end
-
   if label == nil then
     return logger
   end
@@ -37,5 +40,5 @@ return function(label)
     error(string.format('No sub-logger=%s', label))
   end
 
-  return LOGGERS[label] --[[@as Logger]]
+  return LOGGERS[label] --[[@as SpoonLogger]]
 end

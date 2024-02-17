@@ -1,1 +1,3 @@
-require('utils.spoons.manager').init 'core.spoons.spec'
+Safe.require('utils.spoons.manager', function(m)
+  m.init 'core.spoons.spec'
+end)
