@@ -1,3 +1,4 @@
+local Lambda = require 'toolbox.functional.lambda'
 local Mouse = require 'utils.ctrl.mouse'
 
 -- single, global instance
@@ -79,12 +80,14 @@ function Quake:get_app(app_name, app_window)
   return self.apps[app_name]
 end
 
-local function hide(app_name, app)
+local function hide(app)
+  local app_name = app:name()
   LOGGER:debug('hiding %s', { app_name })
   app:hide()
 end
 
-local function focus(app_name, app)
+local function focus(app)
+  local app_name = app:name()
   LOGGER:debug('focusing %s', { app_name })
 
   local win = app:mainWindow()
@@ -133,10 +136,20 @@ function Quake:toggle(app_id)
   end
 
   if app:isFrontmost() then
-    hide(app_name, app)
+    hide(app)
   else
-    focus(app_name, app)
+    focus(app)
   end
+end
+
+--- Hides all quake windows.
+---
+---@param filter (fun(hs.application): boolean)|nil: optional; function for filtering
+--- which quake windows to hide; accepts an application and returns true if that
+--- applications quake window should be hidden
+function Quake:hide_all(filter)
+  filter = filter or Lambda.TRUE
+  Stream.new(Table.values(self.apps)):filter(filter):foreach(hide)
 end
 
 --- Returns a function that, when bound to a hotkey, toggles the state of the app w/ the

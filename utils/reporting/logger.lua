@@ -51,7 +51,7 @@ local function log_method(this, level)
 end
 
 local function notify(level, label, to_log, args, opts)
-  local notify_opts = Table.combine({ endln = '' }, opts)
+  local notify_opts = Table.combine({ endln = '' }, opts or {})
   print(LogFormatter.format(level, label, to_log, args, notify_opts))
 end
 
@@ -63,36 +63,41 @@ function SpoonLogger:do_log(level, to_log, args, opts)
     notify(level, self.label, to_log, args, opts)
   end
 
-  local method = log_method(self, level)
-  method(self.logger, to_log, args, opts)
+  -- local method = log_method(self, level)
+  -- method(self.logger, to_log, args, opts)
 end
 
-local function log_logger_failure(label)
-  local ok, _ = pcall(notify, LogLevel.ERROR, label, 'unexpected logger failure')
+local function log_logger_failure(label, err)
+  local ok, res = xpcall(
+    notify,
+    debug.traceback,
+    LogLevel.ERROR,
+    label,
+    'unexpected logger failure: %s',
+    { err or '?' }
+  )
 
   if not ok then
-    print '[ERROR] catastrophic logger failure'
+    print('[ERROR] catastrophic logger failure: ' .. (res or '?'))
   end
 end
 
 ---@private
 function SpoonLogger:log(level, to_log, args, opts)
-  local ok, _ = pcall(function()
-    self:do_log(level, to_log, args, opts)
-  end)
+  local ok, res = pcall(SpoonLogger.do_log, self, level, to_log, args, opts)
 
   if ok then
     return
   end
 
-  log_logger_failure(self.label)
+  log_logger_failure(self.label, res)
 end
 
 --- Logs a trace level message.
 ---
 ---@param to_log any: the formattable string or object to log
 ---@param args any[]|nil: an array of objects to format into to_log
----@param opts AppLoggerOpts|nil: options that control logging behavior
+---@param opts LoggerOpts|nil: options that control logging behavior
 function SpoonLogger:trace(to_log, args, opts)
   self:log(LogLevel.TRACE, to_log, args, opts)
 end
@@ -101,7 +106,7 @@ end
 ---
 ---@param to_log any: the formattable string or object to log
 ---@param args any[]|nil: an array of objects to format into to_log
----@param opts AppLoggerOpts|nil: options that control logging behavior
+---@param opts LoggerOpts|nil: options that control logging behavior
 function SpoonLogger:debug(to_log, args, opts)
   self:log(LogLevel.DEBUG, to_log, args, opts)
 end
@@ -110,7 +115,7 @@ end
 ---
 ---@param to_log any: the formattable string or object to log
 ---@param args any[]|nil: an array of objects to format into to_log
----@param opts AppLoggerOpts|nil: options that control logging behavior
+---@param opts LoggerOpts|nil: options that control logging behavior
 function SpoonLogger:info(to_log, args, opts)
   self:log(LogLevel.INFO, to_log, args, opts)
 end
@@ -119,7 +124,7 @@ end
 ---
 ---@param to_log any: the formattable string or object to log
 ---@param args any[]|nil: an array of objects to format into to_log
----@param opts AppLoggerOpts|nil: options that control logging behavior
+---@param opts LoggerOpts|nil: options that control logging behavior
 function SpoonLogger:warn(to_log, args, opts)
   self:log(LogLevel.WARN, to_log, args, opts)
 end
@@ -128,7 +133,7 @@ end
 ---
 ---@param to_log any: the formattable string or object to log
 ---@param args any[]|nil: an array of objects to format into to_log
----@param opts AppLoggerOpts|nil: options that control logging behavior
+---@param opts LoggerOpts|nil: options that control logging behavior
 function SpoonLogger:error(to_log, args, opts)
   self:log(LogLevel.ERROR, to_log, args, opts)
 end
