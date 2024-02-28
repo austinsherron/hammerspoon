@@ -15,18 +15,18 @@ HK:with({
   { ',', 'System Settings' },
   { 'b', 'Brave Browser' },
   { 'c', 'Google Chrome' },
+  { 'f', 'Finder' },
   { 'i', { name = 'Google Chrome incognito', fn = incognito } },
   { 'k', 'Bazecor' },
   { 'z', 'Zoom' },
 })
 
-local iTerm_quake = { name = 'iTerm', window = 'tmux' }
-
 -- quake bindings
 HK:with({
+  { 'd', { name = 'Quake > Discord', fn = QK:for_binding 'Discord' } },
   { 'h', { name = 'Quake > Hammerspoon', fn = QK:for_binding 'Hammerspoon' } },
   { 's', { name = 'Quake > Slack', fn = QK:for_binding 'Slack' } },
-  { 't', { name = 'Quake > iTerm', fn = QK:for_binding(iTerm_quake) } },
+  { 't', { name = 'Quake > iTerm', fn = QK:for_binding 'Telegram' } },
   { 'w', { name = 'Quake > WhatsApp', fn = QK:for_binding 'WhatsApp' } },
 })
 

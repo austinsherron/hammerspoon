@@ -30,4 +30,4 @@ foreach = Map.foreach
 map = Map.map
 fmt = String.fmt
 
--- GetLogger('INIT'):info 'Globals initialized'
+GetLogger('INIT'):info 'Globals initialized'
