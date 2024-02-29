@@ -11,18 +11,20 @@ local LOGGER = GetLogger 'KEYMAP'
 --- Maps to/from arbitrary key combinations.
 ---
 ---@class KeyMapper
----@field private app_filter string
+---@field private app_filter Set
 ---@field private keymap KeyMapping[]
 local KeyMapper = {}
 KeyMapper.__index = KeyMapper
 
 --- Constructor
 ---
----@param app_filter string|nil: the name of an app to which to apply bindings
+---@param app_filter string|Set|nil: the name(s) of app(s) to which to apply bindings
 ---@return KeyMapper: a new instance
 function KeyMapper.new(app_filter)
+  app_filter = app_filter or Set.new()
+
   return setmetatable({
-    app_filter = app_filter,
+    app_filter = String.is(app_filter) and Set.of(app_filter) or app_filter,
     keymap = {},
   }, KeyMapper)
 end
@@ -78,10 +80,10 @@ end
 
 --- Adds an app filter to the instance.
 ---
----@param app_filter string: the name of an app to which to apply re-mapped bindings
+---@param ... string: the name(s) of app(s) to which to apply re-mapped bindings
 ---@return KeyMapper: this instance
-function KeyMapper:with_app(app_filter)
-  self.app_filter = app_filter
+function KeyMapper:with_app(...)
+  self.app_filter:addall(...)
   return self
 end
 
@@ -99,7 +101,7 @@ function KeyMapper:make_handler()
   return function(event)
     local app = hs.application.frontmostApplication()
 
-    if self.app_filter ~= nil and app:name() ~= self.app_filter then
+    if not self.app_filter:contains(app:name()) then
       return event
     end
 
