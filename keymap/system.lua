@@ -4,10 +4,13 @@ local Volume = require 'utils.api.volume'
 
 -- volume interactions ---------------------------------------------------------
 
-KeyMapper.new()
+KeyMapper.new('volume interaction')
   :with({
-    { lhs = KeyCombo.new({ 'fn' }, '1'), rhs = Volume.toggle_mute },
-    { lhs = KeyCombo.new({ 'fn' }, '2'), rhs = Volume.decrease },
-    { lhs = KeyCombo.new({ 'fn' }, '3'), rhs = Volume.increase },
+    {
+      lhs = KeyCombo({ 'fn' }, '2'),
+      rhs = { name = 'vol: mute', fn = Volume.toggle_mute },
+    },
+    { lhs = KeyCombo({ 'fn' }, '`'), rhs = { name = 'vol: -', fn = Volume.decrease } },
+    { lhs = KeyCombo({ 'fn' }, '1'), rhs = { name = 'vol: +', fn = Volume.increase } },
   })
   :bind()

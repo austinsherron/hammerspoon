@@ -20,7 +20,9 @@ Hotkey.hotkey(
 KeyMapper.new()
   :with_app('Brave Browser', 'Google Chrome')
   :with({
-    { lhs = KeyCombo.new({ 'fn' }, 'h'), rhs = KeyCombo.new({ 'cmd' }, '[') },
-    { lhs = KeyCombo.new({ 'fn' }, 'l'), rhs = KeyCombo.new({ 'cmd' }, ']') },
+    { lhs = KeyCombo({ 'fn', 'alt' }, 'h'), rhs = KeyCombo({ 'cmd' }, '[') },
+    { lhs = KeyCombo({ 'fn', 'alt' }, 'l'), rhs = KeyCombo({ 'cmd' }, ']') },
+    { lhs = KeyCombo({ 'fn' }, 'a'), rhs = KeyCombo({ 'cmd' }, '[') },
+    { lhs = KeyCombo({ 'fn' }, 's'), rhs = KeyCombo({ 'cmd' }, ']') },
   })
   :bind()
