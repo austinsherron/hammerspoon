@@ -14,8 +14,4 @@ Safe.require 'core.spoons' -- load spoons (i.e.: plugins)
 
 Safe.require 'keymap'
 
----- watchers ------------------------------------------------------------------
-
-Safe.require 'core.watchers'
-
 GetLogger('INIT'):info 'Hammerspoon initialization complete'

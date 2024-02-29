@@ -1,4 +1,5 @@
 local Args = require 'toolbox.utils.args'
+local Class = require 'toolbox.meta.class'
 local Key = require 'utils.api.keymap.key'
 
 --- Models a key combination.
@@ -72,6 +73,4 @@ function KeyCombo:__tostring()
   return fmt('%s%s%s', mods_str, sep, key_str)
 end
 
-return setmetatable(KeyCombo, {
-  __call = function(...) return KeyCombo.new(...) end
-})
+return Class.callable(KeyCombo)
