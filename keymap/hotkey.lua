@@ -9,7 +9,8 @@ local function incognito()
   Shell.run '/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --incognito'
 end
 
--- launch/focus bindings
+-- launch/focus apps -----------------------------------------------------------
+
 HK:with({
   { '1', '1Password' },
   { ',', 'System Settings' },
@@ -21,7 +22,8 @@ HK:with({
   { 'z', 'Zoom' },
 })
 
--- quake bindings
+-- toggle quake windows --------------------------------------------------------
+
 HK:with({
   { 'd', { name = 'Quake > Discord', fn = QK:for_binding 'Discord' } },
   { 'h', { name = 'Quake > Hammerspoon', fn = QK:for_binding 'Hammerspoon' } },

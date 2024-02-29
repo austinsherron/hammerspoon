@@ -1,7 +1,8 @@
 local Hotkey = require 'utils.ctrl.hotkey'
 local Mouse = require 'utils.ctrl.mouse'
 
--- mouse bindings
+-- mouse movements -------------------------------------------------------------
+
 Hotkey.hotkey(
   'h',
   { name = 'Mouse > prev screen', fn = Mouse.prev_screen },
@@ -12,4 +13,3 @@ Hotkey.hotkey(
   { name = 'Mouse > next screen', fn = Mouse.next_screen },
   { 'shift', 'alt' }
 )
-
