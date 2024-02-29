@@ -1,11 +1,12 @@
 local Key = require 'utils.api.keymap.key'
 local KeyCombo = require 'utils.api.keymap.keycombo'
+local Type = require 'toolbox.meta.type'
 
 local LOGGER = GetLogger 'KEYMAP'
 
 ---@note: must have one of rhs or swap
 ---@alias Swap { lhs: KeyCombo, swap: { [string]: string } }
----@alias KeyMapping { lhs: KeyCombo, rhs: KeyCombo }
+---@alias KeyMapping { lhs: KeyCombo, rhs: KeyCombo|function }
 
 --- Maps to/from arbitrary key combinations.
 ---
@@ -84,6 +85,15 @@ function KeyMapper:with_app(app_filter)
   return self
 end
 
+local function process_rhs(lhs, rhs)
+  if Type.is(rhs, KeyCombo) then
+    return rhs:toevent()
+  elseif Type.is(rhs, 'function') then
+    rhs()
+    return lhs:toevent()
+  end
+end
+
 ---@private
 function KeyMapper:make_handler()
   return function(event)
@@ -99,7 +109,7 @@ function KeyMapper:make_handler()
 
       if lhs:matches(event) then
         LOGGER:debug('binding %s -> %s', { lhs, rhs })
-        return rhs:toevent()
+        return process_rhs(lhs, rhs)
       end
     end
 
