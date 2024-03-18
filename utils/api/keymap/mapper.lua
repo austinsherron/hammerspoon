@@ -4,6 +4,9 @@ local Type = require 'toolbox.meta.type'
 
 local LOGGER = GetLogger 'KEYMAP'
 
+-- NOTE: this is intentionally exposed as a global; see note in KeyMapper.register fn docs
+HANDLERS = {}
+
 ---@note: must have one of rhs or swap
 ---@alias MappedFnSpec { name: string, fn: function }
 ---@alias KeyMapping { lhs: KeyCombo, rhs: KeyCombo|MappedFnSpec|Swap}
@@ -12,20 +15,19 @@ local LOGGER = GetLogger 'KEYMAP'
 ---
 ---@class KeyMapper
 ---@field private app_filter Set
----@field private desc string
+---@field private key string
 ---@field private keymap KeyMapping[]
 local KeyMapper = {}
 KeyMapper.__index = KeyMapper
 
 --- Constructor
 ---
----@param desc string|nil: optional; high-level description of bindings processed by this
---- instance
+---@param key string: uniquely identifies this instance
 ---@return KeyMapper: a new instance
-function KeyMapper.new(desc)
+function KeyMapper.new(key)
   return setmetatable({
     app_filter = Set.new(),
-    desc = desc or '',
+    key = key or '',
     keymap = {},
   }, KeyMapper)
 end
@@ -135,6 +137,15 @@ function KeyMapper:handler()
   end
 end
 
+--- NOTE: this method and the global table it mutates exist to overcome a hammerspoon bug,
+--- as detailed here: https://github.com/Hammerspoon/hammerspoon/issues/1859
+---
+---@private
+function KeyMapper:register(listener)
+  HANDLERS[self.key] = listener
+  return listener
+end
+
 --- Binds this instance's keymap(s) using the provided events, or "keyDown" if none are
 --- provided.
 ---
@@ -145,10 +156,10 @@ function KeyMapper:bind(eventtypes)
   eventtypes = eventtypes or { hs.eventtap.event.types.keyDown }
   local eventtap = hs.eventtap.new(eventtypes, self:handler())
 
-  LOGGER:info('binding %s keymap for app(s)=%s', { self.desc, self.app_filter:entries() })
+  LOGGER:info('binding %s keymap for app(s)=%s', { self.key, self.app_filter:entries() })
   eventtap:start()
 
-  return eventtap
+  return self:register(eventtap)
 end
 
 return KeyMapper
