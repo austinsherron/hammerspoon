@@ -1,11 +1,16 @@
-local Lambda = require 'toolbox.functional.lambda'
-local Mouse = require 'utils.ctrl.mouse'
+local Mouse = require 'utils.api.mouse'
+local Screen = require 'utils.api.screen'
 
--- single, global instance
-local QUAKE = nil
 local LOGGER = GetLogger 'QUAKE'
+local QUAKE = nil -- NOTE: single, global instance
 
 ---@alias QuakeAppIdentifier { name: string, window: string|nil }
+
+--- Parameterizes quake window appearance, toggling behavior, etc.
+---
+---@class QuakeWindowOpts
+---@field maximize boolean|nil: optional, defaults to false; if true, the window will be
+--- maximized when shown
 
 --- Singleton utility that "quake-ifies" (i.e.: enables hotkey dropdown toggling)
 --- arbitrary application windows.
@@ -86,16 +91,47 @@ local function hide(app)
   app:hide()
 end
 
-local function focus(app)
-  local app_name = app:name()
-  LOGGER:debug('focusing %s', { app_name })
+---@private
+function Quake:hide_windows_on_current_screen(showing, mouse_screen)
+  LOGGER:debug(
+    'hiding quake windows on screen=%s before showing %s',
+    { mouse_screen:name(), showing:name() }
+  )
 
+  for _, app in pairs(self.apps) do
+    if app:name() ~= showing:name() and Screen.app_on_screen(app, mouse_screen) then
+      LOGGER:debug('quake managed app on current screen: %s', { app:name() })
+      hide(app)
+    end
+  end
+end
+
+local function evaluate_opts(win, opts)
+  if opts.maximize ~= true then
+    win:maximize()
+  end
+end
+
+---@private
+function Quake:focus(app, opts)
+  local app_name = app:name()
   local win = app:mainWindow()
 
+  if win == nil then
+    LOGGER:warn('unable to find window for %s', { app_name })
+    return
+  end
+
+  local mouse_screen = Mouse.current_screen()
+
+  self:hide_windows_on_current_screen(app, mouse_screen)
   win:setFullscreen(false)
   hs.spaces.moveWindowToSpace(win:id(), hs.spaces.focusedSpace())
-  win:moveToScreen(Mouse.current_screen())
-  win:maximize()
+  win:moveToScreen(mouse_screen)
+
+  evaluate_opts(win, opts)
+
+  LOGGER:debug('focusing %s', { app_name })
   win:focus()
 end
 
@@ -123,9 +159,11 @@ local function unminimize_if_necessary(app)
 end
 
 ---@private
-function Quake:toggle(app_id)
+function Quake:toggle(app_id, opts)
   local app_name = app_id.name
   local app = self:get_app(app_name, app_id.window)
+
+  LOGGER:info('Starting quake toggle for app=%s', { app_name })
 
   if launch_if_necessary(app) then
     return
@@ -138,8 +176,10 @@ function Quake:toggle(app_id)
   if app:isFrontmost() then
     hide(app)
   else
-    focus(app)
+    self:focus(app, opts)
   end
+
+  LOGGER:info('Starting quake toggle for app=%s', { app_name })
 end
 
 --- Hides all quake windows.
@@ -157,11 +197,24 @@ end
 ---
 ---@param app_id string|QuakeAppIdentifier: the name of or an identifier for the app for
 --- which to enable toggling
+---@param opts QuakeWindowOpts|nil: parameterizes quake window appearance, toggling
+--- behavior, etc
 ---@return function: a toggle function for the app w/ the provided name
-function Quake:for_binding(app_id)
+function Quake:for_binding(app_id, opts)
+  app_id = String.is(app_id) and { name = app_id } or app_id
+
   return function()
-    self:toggle(String.is(app_id) and { name = app_id } or app_id)
+    self:toggle(app_id, opts or {})
   end
+end
+
+--- Checks if the app w/ the provided name is managed by this instance.
+---
+---@param app_name string: the name of the app to check
+---@return boolean: true if the app w/ the provided name is managed by this instance,
+--- false otherwise
+function Quake:is_managed(app_name)
+  return self.apps[app_name] ~= nil
 end
 
 return Quake

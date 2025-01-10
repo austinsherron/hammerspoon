@@ -1,4 +1,4 @@
-local ternary = require('toolbox.core.bool').ternary
+local KeyCombo = require 'utils.api.keymap.keycombo'
 
 local LOGGER = GetLogger 'HOTKEY'
 
@@ -62,8 +62,21 @@ local function launch_or_focus_app(to_bind)
   end
 end
 
-local function get_binding_fn(to_bind)
-  return String.is(to_bind) and launch_or_focus_app(to_bind) or to_bind.fn
+local function get_binding_fn(key_combo, to_bind)
+  local fn, desc
+
+  if String.is(to_bind) then
+    desc = to_bind
+    fn = launch_or_focus_app(to_bind)
+  else
+    desc = to_bind.name
+    fn = to_bind.fn
+  end
+
+  return function()
+    LOGGER:debug('executing hotkeys=%s: %s', { key_combo, desc })
+    return fn()
+  end
 end
 
 local function log_binding_msg(key, to_bind)
@@ -79,7 +92,7 @@ end
 --- a function to trigger
 ---@param mods string[]|nil: optional; trigger modifier keys
 function Hotkey:bind_one(key, to_bind, mods)
-  local fn = get_binding_fn(to_bind)
+  local fn = get_binding_fn(KeyCombo(mods, key), to_bind)
 
   log_binding_msg(key, to_bind)
 
@@ -123,7 +136,11 @@ end
 -- spec w/ a function to trigger
 ---@param mods string[]|nil: optional; trigger modifier keys
 function Hotkey.hotkey(key, to_bind, mods)
-  local fn = get_binding_fn(to_bind)
+  LOGGER:debug(
+    'Hotkey.hotkey: key=%s, to_bind=%s, mods=%s',
+    { key or '?', to_bind, mods or '?' }
+  )
+  local fn = get_binding_fn(KeyCombo(mods, key), to_bind)
 
   log_binding_msg(key, to_bind)
 

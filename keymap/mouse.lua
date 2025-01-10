@@ -5,11 +5,11 @@ local Mouse = require 'utils.ctrl.mouse'
 
 Hotkey.hotkey(
   'h',
-  { name = 'Mouse > prev screen', fn = Mouse.prev_screen },
+  { name = 'Mouse > left screen', fn = Mouse.left_screen },
   { 'shift', 'alt' }
 )
 Hotkey.hotkey(
   'l',
-  { name = 'Mouse > next screen', fn = Mouse.next_screen },
+  { name = 'Mouse > right screen', fn = Mouse.right_screen },
   { 'shift', 'alt' }
 )

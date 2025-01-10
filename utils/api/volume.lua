@@ -1,4 +1,3 @@
-local Lambda = require 'toolbox.functional.lambda'
 local Num = require 'toolbox.core.num'
 
 -- TODO: I have to wonder if this really needs to be hardcoded, or if I can reference an

@@ -16,6 +16,8 @@ String = require 'toolbox.core.string'
 Table = require 'toolbox.core.table'
 Err = require 'toolbox.error.error'
 Set = require 'toolbox.extensions.set'
+Lambda = require 'toolbox.functional.lambda'
+Class = require 'toolbox.meta.class'
 Lazy = require 'toolbox.utils.lazy'
 Map = require 'toolbox.utils.map'
 

@@ -19,8 +19,23 @@ local LOGGERS = {
   QUAKE = Lazy.value(function()
     return logger:sub 'QUAKE'
   end),
+  SCREEN = Lazy.value(function()
+    return logger:sub 'SCREEN'
+  end),
+  SPACES = Lazy.value(function()
+    return logger:sub 'SPACES'
+  end),
   SPOONS = Lazy.value(function()
     return logger:sub 'SPOONS'
+  end),
+  WATCHER = Lazy.value(function()
+    return logger:sub 'WATCHER'
+  end),
+  WINDOW = Lazy.value(function()
+    return logger:sub 'WINDOW'
+  end),
+  WINMGR = Lazy.value(function()
+    return logger:sub 'WINMGR'
   end),
 }
 
