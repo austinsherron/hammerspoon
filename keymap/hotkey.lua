@@ -2,7 +2,7 @@ local Hotkey = require 'utils.ctrl.hotkey'
 local Quake = require 'utils.ctrl.quake'
 local Shell = require 'toolbox.system.shell'
 
-local HK = Hotkey.modal({ 'F1', 'F10' })
+local HK = Hotkey.modal({ 'F1', 'F12' })
 local QK = Quake.get()
 
 local function incognito()
