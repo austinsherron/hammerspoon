@@ -19,7 +19,14 @@ HK:with({
   { 'f', 'Finder' },
   { 'i', { name = 'Google Chrome incognito', fn = incognito } },
   { 'k', 'Bazecor' },
+<<<<<<< Updated upstream
   { 'z', 'Zoom' },
+=======
+  { 'p', { name = 'Brave Browser Private', fn = brave_private } },
+  { 'q', 'Quicktime' },
+  { 's', 'Slace' },
+  { 'z', 'zoom.us' },
+>>>>>>> Stashed changes
 })
 
 -- toggle quake windows --------------------------------------------------------
