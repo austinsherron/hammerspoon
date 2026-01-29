@@ -20,6 +20,7 @@ HK:with({
   { ',', 'System Settings' },
   { 'b', 'Brave Browser' },
   { 'c', 'Cursor' },
+  { 'd', 'TablePlus' },
   { 'f', 'Finder' },
   { 'g', 'Google Chrome' },
   { 'i', { name = 'Google Chrome incognito', fn = incognito } },
@@ -33,10 +34,7 @@ HK:with({
 -- toggle quake windows --------------------------------------------------------
 
 HK:with({
-  { 'd', { name = 'Quake > Discord', fn = QK:for_binding 'Discord' } },
   { 'h', { name = 'Quake > Hammerspoon', fn = QK:for_binding 'Hammerspoon' } },
-  { 's', { name = 'Quake > Slack', fn = QK:for_binding 'Slack' } },
-  { 't', { name = 'Quake > iTerm', fn = QK:for_binding 'Telegram' } },
   { 'w', { name = 'Quake > WhatsApp', fn = QK:for_binding 'WhatsApp' } },
 })
 
