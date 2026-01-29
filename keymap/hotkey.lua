@@ -9,6 +9,10 @@ local function incognito()
   Shell.run '/Applications/Google\\ Chrome.app/Contents/MacOS/Google\\ Chrome --incognito'
 end
 
+local function brave_private()
+  Shell.run 'brave-browser-private'
+end
+
 -- launch/focus apps -----------------------------------------------------------
 
 HK:with({
@@ -19,14 +23,10 @@ HK:with({
   { 'f', 'Finder' },
   { 'i', { name = 'Google Chrome incognito', fn = incognito } },
   { 'k', 'Bazecor' },
-<<<<<<< Updated upstream
-  { 'z', 'Zoom' },
-=======
   { 'p', { name = 'Brave Browser Private', fn = brave_private } },
   { 'q', 'Quicktime' },
-  { 's', 'Slace' },
-  { 'z', 'zoom.us' },
->>>>>>> Stashed changes
+  { 's', 'Slack' },
+  { 'z', 'Zoom' },
 })
 
 -- toggle quake windows --------------------------------------------------------
