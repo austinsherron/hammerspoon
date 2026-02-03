@@ -20,7 +20,6 @@ HK:with({
   { ',', 'System Settings' },
   { 'b', 'Brave Browser' },
   { 'c', 'Cursor' },
-  { 'd', 'TablePlus' },
   { 'f', 'Finder' },
   { 'g', 'Google Chrome' },
   { 'i', { name = 'Google Chrome incognito', fn = incognito } },
@@ -28,6 +27,7 @@ HK:with({
   { 'p', { name = 'Brave Browser Private', fn = brave_private } },
   { 'q', 'Quicktime' },
   { 's', 'Slack' },
+  { 't', 'TablePlus' },
   { 'z', 'Zoom' },
 })
 
