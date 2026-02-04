@@ -52,7 +52,7 @@ end
 
 local function notify(level, label, to_log, args, opts)
   local notify_opts = Table.combine({ endln = '' }, opts or {})
-  print(LogFormatter.format(level, label, to_log, args, notify_opts))
+  print(LogFormatter.format(level, LoggerType.HAMMERSPOON, label, to_log, args, notify_opts))
 end
 
 ---@private
