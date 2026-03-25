@@ -1,5 +1,5 @@
 local Lambda = require 'toolbox.functional.lambda'
-local Mouse = require 'utils.ctrl.mouse'
+local Mouse = require 'utils.api.mouse'
 
 -- single, global instance
 local QUAKE = nil

@@ -22,6 +22,9 @@ local LOGGERS = {
   SPOONS = Lazy.value(function()
     return logger:sub 'SPOONS'
   end),
+  WINDOW = Lazy.value(function()
+    return logger:sub 'WINDOW'
+  end),
 }
 
 --- Gets the root logger instance or the scoped sub-logger instance for the provided

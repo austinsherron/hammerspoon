@@ -13,3 +13,13 @@ Hotkey.hotkey(
   { name = 'Mouse > next screen', fn = Mouse.next_screen },
   { 'shift', 'alt' }
 )
+Hotkey.hotkey(
+  'j',
+  { name = 'Mouse > prev window ', fn = Mouse.prev_window },
+  { 'shift', 'alt' }
+)
+Hotkey.hotkey(
+  'k',
+  { name = 'Mouse > prev window ', fn = Mouse.next_window },
+  { 'shift', 'alt' }
+)

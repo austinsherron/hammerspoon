@@ -1,68 +1,99 @@
+local Mouse = require 'utils.api.mouse'
 local Screen = require 'utils.api.screen'
+local Window = require 'utils.api.window'
+
+local WindowDirection = Window.Direction
 
 local LOGGER = GetLogger 'MOUSE'
 
 --- Utilities for controlling the mouse/cursor.
 ---
----@class Mouse
-local Mouse = {}
+---@class MouseCtrl
+local MouseCtrl = {}
 
----@return hs.screen: the screen where the mouse is
-function Mouse.current_screen()
-  local current = hs.mouse.getCurrentScreen()
-
-  if current == nil then
-    error "unexpected error getting the cursor's current screen"
-  end
-
-  LOGGER:trace('current screen=%s', { current:name() })
-  return current
-end
-
-local function log_move_mouse(current, target, direction, click)
+local function log_move_mouse(current, target, direction, type, click)
   local w_or_wo = click == false and 'without' or 'with'
   LOGGER:debug(
-    'moving mouse screen from %s to %s (%s) (%s click)',
-    { current:name(), target:name(), direction, w_or_wo }
+    'moving mouse %s from %s to %s (%s) (%s click)',
+    { type, current, target, direction, w_or_wo }
   )
 end
 
-local function to_rel_screen_center(get_screen, direction, click)
-  local current = Mouse.current_screen()
-  local target = get_screen(current)
-  local center = Screen.center(target)
-
-  log_move_mouse(current, target, direction, click)
+local function to_rel_center(current, target, get_center, direction, type, click)
+  local center = get_center(target)
 
   hs.mouse.absolutePosition(center)
+  local win_at_center = Window.at(center)
+  local should_click = click ~= false
+    and win_at_center ~= nil
+    and not Window.is_focused(win_at_center)
 
-  if click ~= false then
-    Mouse.click(center)
+  log_move_mouse(current, target, direction, type, should_click)
+
+  if should_click then
+    MouseCtrl.click(center)
   end
 end
 
---- Moves the mouse to the center of the "prev" screen and optionally click.
+--- Moves the mouse to the center of the "previous" screen and optionally clicks.
+---
+--- NOTE: click=true results in a click only if the window under the cursor at its new
+--- position isn't already focused.
 ---
 ---@param click boolean|nil: optional, defaults to true; if true, left click after moving
---- the mouse
-function Mouse.prev_screen(click)
-  to_rel_screen_center(function(screen)
-    return screen:previous()
-  end, 'prev', click)
+--- the mouse if the window under the cursor at its new position isn't already focused
+function MouseCtrl.prev_screen(click)
+  local current = Mouse.current_screen()
+  to_rel_center(current, current:previous(), Screen.center, 'prev', 'screen', click)
 end
 
---- Moves the mouse to the center of the "next" screen and optionally click.
+--- Moves the mouse to the center of the "next" screen and optionally clicks.
+---
+--- NOTE: click=true results in a click only if the window under the cursor at its new
+--- position isn't already focused.
 ---
 ---@param click boolean|nil: optional, defaults to true; if true, left click after moving
---- the mouse
-function Mouse.next_screen(click)
-  to_rel_screen_center(function(screen)
-    return screen:next()
-  end, 'next', click)
+--- the mouse if the window under the cursor at its new position isn't already focused
+function MouseCtrl.next_screen(click)
+  local current = Mouse.current_screen()
+  to_rel_center(current, current:next(), Screen.center, 'next', 'screen', click)
 end
 
-function Mouse.click(point)
-  hs.eventtap.leftClick(point)
+--- Moves the mouse to the center of the "previous" window and optionally clicks.
+---
+--- NOTE: click=true results in a click only if the window under the cursor at its new
+--- position isn't already focused.
+---
+---@param click boolean|nil: optional, defaults to true; if true, left click after moving
+--- the mouse if the window under the cursor at its new position isn't already focused
+function MouseCtrl.prev_window(click)
+  local current = Window.focused()
+  local target = Window.first_to_the(WindowDirection.LEFT)
+
+  if target ~= nil then
+    to_rel_center(current, target, Window.center, 'prev', 'window', click)
+  end
 end
 
-return Mouse
+--- Moves the mouse to the center of the "next" window and optionally clicks.
+---
+--- NOTE: click=true results in a click only if the window under the cursor at its new
+--- position isn't already focused.
+---
+---@param click boolean|nil: optional, defaults to true; if true, left click after moving
+--- the mouse if the window under the cursor at its new position isn't already focused
+function MouseCtrl.next_window(click)
+  local current = Window.focused()
+  local target = Window.first_to_the(WindowDirection.RIGHT)
+
+  if target ~= nil then
+    to_rel_center(current, target, Window.center, 'next', 'window', click)
+  end
+end
+
+---@see hs.eventtap.leftClick.
+function MouseCtrl.click(...)
+  hs.eventtap.leftClick(...)
+end
+
+return MouseCtrl
