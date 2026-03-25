@@ -1,7 +1,7 @@
 local Hotkey = require 'utils.ctrl.hotkey'
 local KeyCombo = require 'utils.api.keymap.keycombo'
 local KeyMapper = require 'utils.api.keymap.mapper'
-local Window = require 'utils.api.window'
+local Window = require 'utils.ctrl.window'
 
 -- window interactions ---------------------------------------------------------
 

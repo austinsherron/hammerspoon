@@ -1,3 +1,5 @@
+local Mouse = require 'utils.api.mouse'
+
 local enum = require('toolbox.extensions.enum').enum
 
 local LOGGER = GetLogger 'WINDOW'
@@ -26,32 +28,6 @@ end
 ---@return hs.window: the focused window
 function Window.focused()
   return hs.window.focusedWindow()
-end
-
---- Maximizes the focused window.
-function Window.maximize()
-  Window.focused():maximize()
-end
-
---- Minimizes the focused window.
----
----@param force boolean|nil: optional, defaults to false; if true, minimizes fullscreen
---- windows
-function Window.minimize(force)
-  local window = Window.focused()
-
-  if force == true and window:isFullScreen() then
-    window:setFullScreen(false)
-  end
-
-  window:minimize()
-end
-
---- Window.minimize w/ force == true.
----
----@see Window.minimize
-function Window.force_minimize()
-  Window.minimize(true)
 end
 
 --- Models possible directions of windows relative to another window.
@@ -120,6 +96,23 @@ function Window.at(point)
   end
 
   return nil
+end
+
+--- Gets all visible, "standard" windows on the provided screen, or the current screen if
+--- none is provided.
+---
+---@param screen hs.screen|nil: optional, defaults to the current screen; the screen for
+--- which to get windows
+---@return hs.window[]: all visible, "standard" windows on the provided screen, or the
+--- current screen if none is provided
+function Window.s_on_screen(screen)
+  screen = screen or Mouse.current_screen()
+
+  return Stream.new(hs.window.visibleWindows())
+    :filter(function(w)
+      return w:screen():id() == screen:id() and w:isStandard()
+    end)
+    :collect()
 end
 
 --- Focuses the next window in the provided direction relative to the focused window.

@@ -1,5 +1,3 @@
-local Screen = require 'utils.api.screen'
-
 local LOGGER = GetLogger 'MOUSE'
 
 --- Utilities for controlling the mouse/cursor.
