@@ -53,9 +53,6 @@ local function find_app_by_window(app_window)
 end
 
 ---@private
----@param app_name string
----@param app_window string|nil
----@return hs.application
 function Quake:get_app(app_name, app_window)
   -- "cache miss"
   if self.apps[app_name] == nil then
@@ -109,6 +106,11 @@ local function launch_if_necessary(app)
   return false
 end
 
+local function is_on_screen(app, screen)
+  local win = app:mainWindow()
+  return win ~= nil and win:screen():id() == screen:id()
+end
+
 local function unminimize_if_necessary(app)
   local win = Table.safeget(app:allWindows(), 1)
 
@@ -123,6 +125,13 @@ local function unminimize_if_necessary(app)
 end
 
 ---@private
+function Quake:hide_others(app)
+  local screen = Mouse.current_screen()
+  self:hide_all(function(other)
+    return other:name() ~= app:name() and is_on_screen(other, screen)
+  end)
+end
+
 function Quake:toggle(app_id)
   local app_name = app_id.name
   local app = self:get_app(app_name, app_id.window)
@@ -139,6 +148,7 @@ function Quake:toggle(app_id)
     hide(app)
   else
     focus(app)
+    self:hide_others(app)
   end
 end
 
